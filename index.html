@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amp Squad Form Responses</title>
+  <link rel="stylesheet" href="amp_style.css">
+</head>
+<body>
+
+  <div class="container">
+      <h1>Amp Squad Form Responses</h1>
+
+      <!-- Controls for Sorting and Filtering -->
+      <div class="controls">
+          <select id="statusFilter">
+              <option value="all">Status: All</option>
+              <option value="Open">Open</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+          </select>
+
+          <input type="text" id="searchInput" placeholder="🔍 Search Responses">
+      </div>
+
+      <!-- Responses Table -->
+      <table>
+          <thead>
+              <tr>
+                  <th>Team Number</th>
+                  <th>Team Name</th>
+                  <th>Robot Problem</th>
+                  <th>Submitted<th>
+                  <th>Action</th> <!-- New column for delete button -->
+              </tr>
+          </thead>
+          <tbody id="response-list">
+              <!-- Data from Google Sheets API will be inserted here -->
+          </tbody>
+      </table>
+  </div>
+  <script src="script.js"></script>
+
+</body>
+</html>
