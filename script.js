@@ -1,5 +1,5 @@
 async function fetchResponses() {
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwEwI8fdfPoG04yly_9NQBFtE-VP8LwLlyG9fHAWIjVcmXHovq6GtMVWGQ-SJydaFSC/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbyIBUfNE19UgG8zF5UQtIGexaUObbkRyi03PHcm7E06qAqZKUgY_zNid8DvG7Y2WJ13/exec";
 
     try {
         const response = await fetch(scriptUrl);
