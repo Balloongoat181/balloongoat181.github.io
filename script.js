@@ -1,4 +1,4 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbwkj-6UnO1fiAtNjbJ4Ph8NAuk9vbgg3bpNZ0PWMY1AjpqKm016w0McVH1mKMNkD4a7/exec";
+const scriptUrl = "https://script.google.com/macros/s/AKfycbyuQds69akmjGdWD8Mr6iAXZiXgpplOVj_-jQZYNfO-XCdjuLwxL2weR3A9T3ibdwbl/exec";
 
 async function fetchResponses() {
     try {
