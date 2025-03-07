@@ -1,5 +1,5 @@
+const scriptUrl = "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxSayaBjptqbnpyN3Q-AbtNdld8eu6PS_qqc8xWrm4HvCZ-3pjEjnKCxumHVUQ_jvwa/exec");
 async function fetchResponses() {
-    const scriptUrl = "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxSayaBjptqbnpyN3Q-AbtNdld8eu6PS_qqc8xWrm4HvCZ-3pjEjnKCxumHVUQ_jvwa/exec");
     try {
         const response = await fetch(scriptUrl);
         const data = await response.json();
