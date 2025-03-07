@@ -1,42 +1,51 @@
-const scriptUrl = "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxSayaBjptqbnpyN3Q-AbtNdld8eu6PS_qqc8xWrm4HvCZ-3pjEjnKCxumHVUQ_jvwa/exec");
+const scriptUrl = "https://script.google.com/macros/s/AKfycbxSayaBjptqbnpyN3Q-AbtNdld8eu6PS_qqc8xWrm4HvCZ-3pjEjnKCxumHVUQ_jvwa/exec";
+
 async function fetchResponses() {
     try {
+        console.log("Fetching data from:", scriptUrl);
         const response = await fetch(scriptUrl);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         const data = await response.json();
-    
-        console.log("Fetched Data:", data); // Debugging step
-    
+        console.log("Fetched Data:", data); // Debugging log
+
         const responseList = document.getElementById("response-list");
         responseList.innerHTML = ""; // Clear previous data
-    
+
         data.forEach(entry => {
+            console.log("Entry Data:", entry); // Debugging - Check structure of data
+
             let row = document.createElement("tr");
-    
+
             row.innerHTML = `
-                <td>${entry.Team_number}</td>
-                <td>${entry.Team_name}</td>
-                <td>${entry.Robot_problem}</td>
-                <td>${entry.Timestamp}</td>
+                <td>${entry.Team_number || "N/A"}</td>
+                <td>${entry.Team_name || "N/A"}</td>
+                <td>${entry.Robot_problem || "N/A"}</td>
+                <td>${entry.Timestamp || "N/A"}</td>
                 <td><button class="delete-btn" data-row="${entry.rowNumber}">🗑 Delete</button></td>
             `;
-    
+
             responseList.appendChild(row);
         });
-    
-        // Add event listeners to all delete buttons
+
+        // Attach event listeners to delete buttons
         document.querySelectorAll(".delete-btn").forEach(button => {
             button.addEventListener("click", async function() {
                 const rowNumber = this.getAttribute("data-row");
-                await deleteResponse(scriptUrl, rowNumber);
+                await deleteResponse(rowNumber); // FIXED: Removed scriptUrl
             });
         });
+
     } catch (error) {
         console.error("Failed to fetch data:", error);
     }
 }
 
-// Function to delete a row from Google Sheets
-async function deleteResponse(scriptUrl, rowNumber) {
+// ✅ FIXED: Removed scriptUrl from function
+async function deleteResponse(rowNumber) {
     const confirmDelete = confirm("Are you sure you want to delete this response?");
     if (!confirmDelete) return;
 
@@ -44,15 +53,23 @@ async function deleteResponse(scriptUrl, rowNumber) {
         const response = await fetch(scriptUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ command: 'delete', rowNumber: parseInt(rowNumber) })
+            body: JSON.stringify({ command: "delete", rowNumber: parseInt(rowNumber) })
         });
-        if (response.ok) {
-            alert('Response deleted successfully!');
+
+        const result = await response.json();
+        console.log("Delete Response:", result);
+
+        if (result.status === "success") {
+            alert("Response deleted successfully!");
             fetchResponses(); // Refresh list after deletion
         } else {
-            alert('Failed to delete response.');
+            alert("Failed to delete response.");
         }
     } catch (error) {
-        console.error('Error deleting response:', error);
+        console.error("Error deleting response:", error);
     }
 }
+
+// Load responses when the page loads
+fetchResponses();
+setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
