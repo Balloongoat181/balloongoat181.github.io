@@ -15,21 +15,21 @@ async function fetchResponses() {
         const responseList = document.getElementById("response-list");
         responseList.innerHTML = ""; // Clear previous data
 
-        data.forEach(entry => {
-            console.log("Entry Data:", entry); // Debugging - Check structure of data
+        data.forEach((entry, index) => { // Use index as rowNumber
+    console.log("Entry Data:", entry); // Debugging - Check structure of data
 
-            let row = document.createElement("tr");
+    let row = document.createElement("tr");
 
-            row.innerHTML = `
-                <td>${entry.Team_number || "N/A"}</td>
-                <td>${entry.Team_name || "N/A"}</td>
-                <td>${entry.Robot_problem || "N/A"}</td>
-                <td>${entry.Timestamp || "N/A"}</td>
-                <td><button class="delete-btn" data-row="${entry.rowNumber}">🗑 Delete</button></td>
-            `;
+    row.innerHTML = `
+        <td>${entry.Team_number || "N/A"}</td>
+        <td>${entry.Team_name || "N/A"}</td>
+        <td>${entry.Robot_problem || "N/A"}</td>
+        <td>${entry.Timestamp || "N/A"}</td>
+        <td><button class="delete-btn" data-row="${index + 2}">🗑 Delete</button></td> 
+    `;
 
-            responseList.appendChild(row);
-        });
+    responseList.appendChild(row);
+});
 
         // Attach event listeners to delete buttons
         document.querySelectorAll(".delete-btn").forEach(button => {
