@@ -35,7 +35,8 @@ async function fetchResponses() {
         document.querySelectorAll(".delete-btn").forEach(button => {
             button.addEventListener("click", async function() {
                 const rowNumber = this.getAttribute("data-row");
-                await deleteResponse(rowNumber); // FIXED: Removed scriptUrl
+                console.log("Delete button clicked for row:", rowNumber); // Debugging
+                await deleteResponse(rowNumber);
             });
         });
 
@@ -44,9 +45,14 @@ async function fetchResponses() {
     }
 }
 
-// ✅ FIXED: Removed scriptUrl from function
-sync function deleteResponse(rowNumber) {
+// ✅ FIXED: Changed `sync` to `async`
+async function deleteResponse(rowNumber) {
     console.log("Attempting to delete row:", rowNumber); // Debugging Log
+
+    if (!rowNumber) {
+        console.error("Error: rowNumber is undefined or null");
+        return;
+    }
 
     const confirmDelete = confirm("Are you sure you want to delete this response?");
     if (!confirmDelete) return;
@@ -71,3 +77,7 @@ sync function deleteResponse(rowNumber) {
         console.error("Error deleting response:", error);
     }
 }
+
+// Load responses when the page loads
+fetchResponses();
+setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
