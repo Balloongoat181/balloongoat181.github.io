@@ -45,7 +45,9 @@ async function fetchResponses() {
 }
 
 // ✅ FIXED: Removed scriptUrl from function
-async function deleteResponse(rowNumber) {
+sync function deleteResponse(rowNumber) {
+    console.log("Attempting to delete row:", rowNumber); // Debugging Log
+
     const confirmDelete = confirm("Are you sure you want to delete this response?");
     if (!confirmDelete) return;
 
@@ -57,7 +59,7 @@ async function deleteResponse(rowNumber) {
         });
 
         const result = await response.json();
-        console.log("Delete Response:", result);
+        console.log("Delete Response:", result); // Debugging Log
 
         if (result.status === "success") {
             alert("Response deleted successfully!");
@@ -69,7 +71,3 @@ async function deleteResponse(rowNumber) {
         console.error("Error deleting response:", error);
     }
 }
-
-// Load responses when the page loads
-fetchResponses();
-setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
