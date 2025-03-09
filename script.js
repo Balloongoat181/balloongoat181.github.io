@@ -30,7 +30,7 @@ async function fetchResponses() {
                 <td>${entry.Team_name || "N/A"}</td>
                 <td>${entry.Robot_problem || "N/A"}</td>
                 <td>${entry.Timestamp || "N/A"}</td>
-                <td>${Status}</td>
+                <td>${statusText}</td>
                 ${buttonHTML}
             `;
 
