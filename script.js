@@ -22,7 +22,7 @@ async function fetchResponses() {
 
             let row = document.createElement("tr");
 
-            // ✅ Check if the row is marked as completed (from localStorage)
+            // ✅ Ensure we check `localStorage` for completed rows
             let isCompleted = completedRows.has(rowNumber);
             let statusText = isCompleted ? "Completed" : "Pending";
             let buttonHTML = isCompleted
@@ -41,7 +41,7 @@ async function fetchResponses() {
             responseList.appendChild(row);
         });
 
-        // Attach event listeners to "Mark as Completed" buttons
+        // ✅ Reapply event listeners for newly created buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
             button.addEventListener("click", function() {
                 const rowNumber = this.getAttribute("data-row");
@@ -54,7 +54,7 @@ async function fetchResponses() {
     }
 }
 
-// ✅ Function to Mark a Response as Completed in UI Only (No Google Sheets Update)
+// ✅ Fix: Ensure completed rows are saved correctly in localStorage
 function markAsCompleted(rowNumber, buttonElement) {
     console.log("Marking row as completed:", rowNumber);
 
@@ -73,6 +73,6 @@ function markAsCompleted(rowNumber, buttonElement) {
     buttonElement.outerHTML = "<span class='completed-text'>✔ Completed</span>"; // Replace button with text
 }
 
-// Load responses when the page loads
-fetchResponses();
+// ✅ Ensure completed rows persist after a page refresh
+document.addEventListener("DOMContentLoaded", fetchResponses);
 setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
