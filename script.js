@@ -1,6 +1,7 @@
 const scriptUrl = "https://script.google.com/macros/s/AKfycbzU1cooi6aCKoftclvNP8NlePv2c_axE9brO6FF1JJYCIACbsYVC3CG8Z-YbpujteHe/exec";
 
-const completedRows = new Set(JSON.parse(localStorage.getItem("completedRows")) || []);
+// ✅ Load completed rows from localStorage (ensure they persist)
+let completedRows = new Set(JSON.parse(localStorage.getItem("completedRows")) || []);
 
 async function fetchResponses() {
     try {
@@ -22,7 +23,7 @@ async function fetchResponses() {
 
             let row = document.createElement("tr");
 
-            // ✅ Ensure we check `localStorage` for completed rows
+            // ✅ Check if row is marked as completed (from localStorage)
             let isCompleted = completedRows.has(rowNumber);
             let statusText = isCompleted ? "Completed" : "Pending";
             let buttonHTML = isCompleted
@@ -41,7 +42,7 @@ async function fetchResponses() {
             responseList.appendChild(row);
         });
 
-        // ✅ Reapply event listeners for newly created buttons
+        // ✅ Restore event listeners for new buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
             button.addEventListener("click", function() {
                 const rowNumber = this.getAttribute("data-row");
@@ -49,12 +50,14 @@ async function fetchResponses() {
             });
         });
 
+        console.log("Completed Rows After Refresh:", completedRows); // Debugging log
+
     } catch (error) {
         console.error("Failed to fetch data:", error);
     }
 }
 
-// ✅ Fix: Ensure completed rows are saved correctly in localStorage
+// ✅ Function to Mark a Response as Completed (Local Storage Only)
 function markAsCompleted(rowNumber, buttonElement) {
     console.log("Marking row as completed:", rowNumber);
 
@@ -71,8 +74,13 @@ function markAsCompleted(rowNumber, buttonElement) {
     row.querySelector("td:nth-child(5)").textContent = "Completed"; // Update status column
 
     buttonElement.outerHTML = "<span class='completed-text'>✔ Completed</span>"; // Replace button with text
+
+    console.log("Updated Completed Rows:", completedRows); // Debugging log
 }
 
 // ✅ Ensure completed rows persist after a page refresh
-document.addEventListener("DOMContentLoaded", fetchResponses);
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Restoring Completed Rows from Local Storage:", completedRows);
+    fetchResponses();
+});
 setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
