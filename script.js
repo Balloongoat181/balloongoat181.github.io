@@ -1,4 +1,6 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbySLXgpEBNviYF9sc4DqDYScQhz7LvS5ODFUeoUdaJCie9wA1vH70SlNP1kFSwu9t8/exec";
+const scriptUrl = "https://script.google.com/macros/s/AKfycbzU1cooi6aCKoftclvNP8NlePv2c_axE9brO6FF1JJYCIACbsYVC3CG8Z-YbpujteHe/exec";
+
+const completedRows = new Set(JSON.parse(localStorage.getItem("completedRows")) || []);
 
 async function fetchResponses() {
     try {
