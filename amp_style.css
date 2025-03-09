@@ -1,3 +1,4 @@
+/* General Styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -9,6 +10,7 @@ body {
     flex-direction: column;
 }
 
+/* Container Box */
 .container {
     width: 90%;
     max-width: 900px;
@@ -19,9 +21,11 @@ body {
     border-radius: 8px;
 }
 
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 thead {
@@ -43,6 +47,7 @@ tr:hover {
     transition: 0.2s;
 }
 
+/* Button Styling */
 button.complete-btn {
     padding: 6px 10px;
     background-color: #28a745;
@@ -50,12 +55,14 @@ button.complete-btn {
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    transition: 0.2s;
 }
 
 button.complete-btn:hover {
     background-color: #218838;
 }
 
+/* Completed Status */
 .completed-text {
     font-weight: bold;
     color: green;
