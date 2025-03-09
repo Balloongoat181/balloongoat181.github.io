@@ -1,5 +1,7 @@
 const scriptUrl = "https://script.google.com/macros/s/AKfycbzXXUnd--XmJb0bLKXWQej1GrzSnG7BCd4VmFY4fh49_R5GLvdyEJXqDOlSsTgLh73U/exec";
 
+const completedRows = new Set(); // Stores completed row numbers
+
 async function fetchResponses() {
     try {
         console.log("Fetching data from:", scriptUrl);
@@ -15,28 +17,35 @@ async function fetchResponses() {
         const responseList = document.getElementById("response-list");
         responseList.innerHTML = ""; // Clear previous data
 
-        data.forEach((entry, index) => { // Use index as rowNumber
-    console.log("Entry Data:", entry); // Debugging - Check structure of data
+        data.forEach((entry, index) => { 
+            console.log("Entry Data:", entry); // Debugging - Check structure of data
 
-    let row = document.createElement("tr");
+            let rowNumber = index + 2; // Ensure correct row mapping
 
-    row.innerHTML = `
-        <td>${entry.Team_number || "N/A"}</td>
-        <td>${entry.Team_name || "N/A"}</td>
-        <td>${entry.Robot_problem || "N/A"}</td>
-        <td>${entry.Timestamp || "N/A"}</td>
-        <td><button class="delete-btn" data-row="${index + 2}">🗑 Delete</button></td> 
-    `;
+            let row = document.createElement("tr");
 
-    responseList.appendChild(row);
-});
+            let statusText = completedRows.has(rowNumber) ? "Completed" : "Pending";
+            let buttonHTML = completedRows.has(rowNumber) 
+                ? "<td><span class='completed-text'>✔ Completed</span></td>" 
+                : `<td><button class="complete-btn" data-row="${rowNumber}">✔ Mark as Completed</button></td>`;
 
-        // Attach event listeners to delete buttons
-        document.querySelectorAll(".delete-btn").forEach(button => {
-            button.addEventListener("click", async function() {
+            row.innerHTML = `
+                <td>${entry.Team_number || "N/A"}</td>
+                <td>${entry.Team_name || "N/A"}</td>
+                <td>${entry.Robot_problem || "N/A"}</td>
+                <td>${entry.Timestamp || "N/A"}</td>
+                <td>${Status}</td>
+                ${buttonHTML}
+            `;
+
+            responseList.appendChild(row);
+        });
+
+        // Attach event listeners to "Mark as Completed" buttons
+        document.querySelectorAll(".complete-btn").forEach(button => {
+            button.addEventListener("click", function() {
                 const rowNumber = this.getAttribute("data-row");
-                console.log("Delete button clicked for row:", rowNumber); // Debugging
-                await deleteResponse(rowNumber);
+                markAsCompleted(rowNumber, this);
             });
         });
 
@@ -45,39 +54,19 @@ async function fetchResponses() {
     }
 }
 
-// ✅ FIXED: Changed `sync` to `async`
-async function deleteResponse(rowNumber) {
-    console.log("Attempting to delete row:", rowNumber); // Debugging Log
+function markAsCompleted(rowNumber, buttonElement) {
+    console.log("Marking row as completed:", rowNumber);
 
     if (!rowNumber) {
         console.error("Error: rowNumber is undefined or null");
         return;
     }
 
-    const confirmDelete = confirm("Are you sure you want to delete this response?");
-    if (!confirmDelete) return;
+    completedRows.add(rowNumber);
+    localStorage.setItem("completedRows", JSON.stringify([...completedRows])); // Save progress
 
-    try {
-        const response = await fetch(scriptUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ command: "delete", rowNumber: parseInt(rowNumber) })
-        });
+    let row = buttonElement.closest("tr");
+    row.querySelector("td:nth-child(5)").textContent = "Completed";
 
-        const result = await response.json();
-        console.log("Delete Response:", result); // Debugging Log
-
-        if (result.status === "success") {
-            alert("Response deleted successfully!");
-            fetchResponses(); // Refresh list after deletion
-        } else {
-            alert("Failed to delete response.");
-        }
-    } catch (error) {
-        console.error("Error deleting response:", error);
-    }
+    buttonElement.outerHTML = "<span class='completed-text'>✔ Completed</span>";
 }
-
-// Load responses when the page loads
-fetchResponses();
-setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
