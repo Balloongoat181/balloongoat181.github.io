@@ -1,6 +1,4 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbzXXUnd--XmJb0bLKXWQej1GrzSnG7BCd4VmFY4fh49_R5GLvdyEJXqDOlSsTgLh73U/exec";
-
-const completedRows = new Set(); // Stores completed row numbers
+const scriptUrl = "https://script.google.com/macros/s/AKfycbySLXgpEBNviYF9sc4DqDYScQhz7LvS5ODFUeoUdaJCie9wA1vH70SlNP1kFSwu9t8/exec";
 
 async function fetchResponses() {
     try {
@@ -17,15 +15,13 @@ async function fetchResponses() {
         const responseList = document.getElementById("response-list");
         responseList.innerHTML = ""; // Clear previous data
 
-        data.forEach((entry, index) => { 
-            console.log("Entry Data:", entry); // Debugging - Check structure of data
-
+        data.forEach((entry, index) => {
             let rowNumber = index + 2; // Ensure correct row mapping
 
             let row = document.createElement("tr");
 
-            let statusText = completedRows.has(rowNumber) ? "Completed" : "Pending";
-            let buttonHTML = completedRows.has(rowNumber) 
+            let statusText = entry.Status === "Completed" ? "Completed" : "Pending";
+            let buttonHTML = entry.Status === "Completed"
                 ? "<td><span class='completed-text'>✔ Completed</span></td>" 
                 : `<td><button class="complete-btn" data-row="${rowNumber}">✔ Mark as Completed</button></td>`;
 
@@ -43,9 +39,9 @@ async function fetchResponses() {
 
         // Attach event listeners to "Mark as Completed" buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
-            button.addEventListener("click", function() {
+            button.addEventListener("click", async function() {
                 const rowNumber = this.getAttribute("data-row");
-                markAsCompleted(rowNumber, this);
+                await markAsCompleted(rowNumber);
             });
         });
 
@@ -54,19 +50,39 @@ async function fetchResponses() {
     }
 }
 
-function markAsCompleted(rowNumber, buttonElement) {
-    console.log("Marking row as completed:", rowNumber);
+// ✅ Function to Send "Mark as Completed" Request
+async function markAsCompleted(rowNumber) {
+    console.log("Attempting to mark row as completed:", rowNumber); // Debugging Log
 
     if (!rowNumber) {
         console.error("Error: rowNumber is undefined or null");
         return;
     }
 
-    completedRows.add(rowNumber);
-    localStorage.setItem("completedRows", JSON.stringify([...completedRows])); // Save progress
+    const confirmMark = confirm("Are you sure you want to mark this as completed?");
+    if (!confirmMark) return;
 
-    let row = buttonElement.closest("tr");
-    row.querySelector("td:nth-child(5)").textContent = "Completed";
+    try {
+        const response = await fetch(scriptUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ command: "markComplete", rowNumber: parseInt(rowNumber) })
+        });
 
-    buttonElement.outerHTML = "<span class='completed-text'>✔ Completed</span>";
+        const result = await response.json();
+        console.log("Update Response:", result); // Debugging Log
+
+        if (result.status === "success") {
+            alert("Response marked as completed!");
+            fetchResponses(); // Refresh list after update
+        } else {
+            alert("Failed to mark response as completed.");
+        }
+    } catch (error) {
+        console.error("Error updating response:", error);
+    }
 }
+
+// Load responses when the page loads
+fetchResponses();
+setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
