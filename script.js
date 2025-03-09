@@ -20,8 +20,10 @@ async function fetchResponses() {
 
             let row = document.createElement("tr");
 
-            let statusText = entry.Status === "Completed" ? "Completed" : "Pending";
-            let buttonHTML = entry.Status === "Completed"
+            // ✅ Check if the row is marked as completed (from localStorage)
+            let isCompleted = completedRows.has(rowNumber);
+            let statusText = isCompleted ? "Completed" : "Pending";
+            let buttonHTML = isCompleted
                 ? "<td><span class='completed-text'>✔ Completed</span></td>" 
                 : `<td><button class="complete-btn" data-row="${rowNumber}">✔ Mark as Completed</button></td>`;
 
@@ -39,9 +41,9 @@ async function fetchResponses() {
 
         // Attach event listeners to "Mark as Completed" buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
-            button.addEventListener("click", async function() {
+            button.addEventListener("click", function() {
                 const rowNumber = this.getAttribute("data-row");
-                await markAsCompleted(rowNumber);
+                markAsCompleted(rowNumber, this);
             });
         });
 
@@ -50,37 +52,23 @@ async function fetchResponses() {
     }
 }
 
-// ✅ Function to Send "Mark as Completed" Request
-async function markAsCompleted(rowNumber) {
-    console.log("Attempting to mark row as completed:", rowNumber); // Debugging Log
+// ✅ Function to Mark a Response as Completed in UI Only
+function markAsCompleted(rowNumber, buttonElement) {
+    console.log("Marking row as completed:", rowNumber);
 
     if (!rowNumber) {
         console.error("Error: rowNumber is undefined or null");
         return;
     }
 
-    const confirmMark = confirm("Are you sure you want to mark this as completed?");
-    if (!confirmMark) return;
+    // ✅ Store completed row in localStorage
+    completedRows.add(rowNumber);
+    localStorage.setItem("completedRows", JSON.stringify([...completedRows])); // Save to localStorage
 
-    try {
-        const response = await fetch(scriptUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ command: "markComplete", rowNumber: parseInt(rowNumber) })
-        });
+    let row = buttonElement.closest("tr");
+    row.querySelector("td:nth-child(5)").textContent = "Completed"; // Update status column
 
-        const result = await response.json();
-        console.log("Update Response:", result); // Debugging Log
-
-        if (result.status === "success") {
-            alert("Response marked as completed!");
-            fetchResponses(); // Refresh list after update
-        } else {
-            alert("Failed to mark response as completed.");
-        }
-    } catch (error) {
-        console.error("Error updating response:", error);
-    }
+    buttonElement.outerHTML = "<span class='completed-text'>✔ Completed</span>"; // Replace button with text
 }
 
 // Load responses when the page loads
