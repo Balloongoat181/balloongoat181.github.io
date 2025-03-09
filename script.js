@@ -54,7 +54,7 @@ async function fetchResponses() {
     }
 }
 
-// ✅ Function to Mark a Response as Completed in UI Only
+// ✅ Function to Mark a Response as Completed in UI Only (No Google Sheets Update)
 function markAsCompleted(rowNumber, buttonElement) {
     console.log("Marking row as completed:", rowNumber);
 
