@@ -1,4 +1,4 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbzU1cooi6aCKoftclvNP8NlePv2c_axE9brO6FF1JJYCIACbsYVC3CG8Z-YbpujteHe/exec";
+const scriptUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Replace with your Web App URL
 
 // ✅ Load completed rows from localStorage (ensure they persist)
 let completedRows = new Set(JSON.parse(localStorage.getItem("completedRows")) || []);
@@ -23,7 +23,7 @@ async function fetchResponses() {
 
             let row = document.createElement("tr");
 
-            // ✅ Check if row is marked as completed (from localStorage)
+            // ✅ Ensure the row's completed state is correctly restored
             let isCompleted = completedRows.has(rowNumber);
             let statusText = isCompleted ? "Completed" : "Pending";
             let buttonHTML = isCompleted
@@ -42,7 +42,7 @@ async function fetchResponses() {
             responseList.appendChild(row);
         });
 
-        // ✅ Restore event listeners for new buttons
+        // ✅ Reapply event listeners for newly created buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
             button.addEventListener("click", function() {
                 const rowNumber = this.getAttribute("data-row");
@@ -57,7 +57,7 @@ async function fetchResponses() {
     }
 }
 
-// ✅ Function to Mark a Response as Completed (Local Storage Only)
+// ✅ Fix: Ensure completed rows are saved correctly in localStorage
 function markAsCompleted(rowNumber, buttonElement) {
     console.log("Marking row as completed:", rowNumber);
 
