@@ -1,24 +1,20 @@
-/* Ensure the HTML and body fill the viewport */
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100vh; /* forces background to extend to full screen height */
-    background-color: #f4f4f4;
-}
-
 body {
     font-family: Arial, sans-serif;
-    /* Removed the flex layout here */
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-/* Container stays centered horizontally by using auto left/right margin */
 .container {
     width: 90%;
     max-width: 900px;
     background: #fff;
     padding: 20px;
-    margin: 30px auto; /* auto margin horizontally centers the container */
+    margin-top: 30px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
