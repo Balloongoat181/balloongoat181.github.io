@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amp Squad Form Responses</title>
-    <link rel="stylesheet" href="amp_style.css"> <!-- Link to CSS -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amp Squad Form Responses</title>
+  <link rel="stylesheet" href="amp_style.css">
 </head>
 <body>
-
-    <div class="container">
-        <h1>Amp Squad Form Responses</h1>
-
-        <!-- Responses Table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Team Number</th>
-                    <th>Team Name</th>
-                    <th>Robot Problem</th>
-                    <th>Submitted</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="response-list">
-                <!-- Data from Google Sheets API will be inserted here -->
-            </tbody>
-        </table>
+  <div class="container">
+    <h1>Amp Squad Form Responses</h1>
+    <!-- Wrap the table in a responsive container -->
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Team Number</th>
+            <th>Team Name</th>
+            <th>Robot Problem</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="response-list">
+          <!-- Data from Google Sheets API will be inserted here.
+               When creating table rows via JavaScript, add a data-label attribute to each <td>
+               corresponding to the header. For example:
+               
+               <td data-label="Team Number">123</td>
+          -->
+        </tbody>
+      </table>
     </div>
-
-    <script src="script.js"></script> <!-- JavaScript File -->
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
