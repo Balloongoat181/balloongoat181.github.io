@@ -1,12 +1,14 @@
-const scriptUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Replace with your Web App URL
-
-// ✅ Load completed rows from localStorage (ensure they persist)
-let completedRows = new Set(JSON.parse(localStorage.getItem("completedRows")) || []);
+const scriptUrl = "https://script.google.com/macros/s/AKfycbwFcnJz-OCElsGPbWy_75tZIfD8JiNo6ocxt1FswNFNwP7h4c72qn5BRuUTftKnRNM/exec"; // Replace with your Web App URL
 
 async function fetchResponses() {
     try {
         console.log("Fetching data from:", scriptUrl);
-        const response = await fetch(scriptUrl);
+        const response = await fetch(scriptUrl, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -18,15 +20,19 @@ async function fetchResponses() {
         const responseList = document.getElementById("response-list");
         responseList.innerHTML = ""; // Clear previous data
 
+        if (!Array.isArray(data) || data.length === 0) {
+            console.warn("No responses found or incorrect format.");
+            responseList.innerHTML = "<tr><td colspan='5'>No responses found</td></tr>";
+            return;
+        }
+
         data.forEach((entry, index) => {
             let rowNumber = index + 2; // Ensure correct row mapping
 
             let row = document.createElement("tr");
 
-            // ✅ Ensure the row's completed state is correctly restored
-            let isCompleted = completedRows.has(rowNumber);
-            let statusText = isCompleted ? "Completed" : "Pending";
-            let buttonHTML = isCompleted
+            let statusText = entry.Status === "Completed" ? "Completed" : "Pending";
+            let buttonHTML = entry.Status === "Completed"
                 ? "<td><span class='completed-text'>✔ Completed</span></td>" 
                 : `<td><button class="complete-btn" data-row="${rowNumber}">✔ Mark as Completed</button></td>`;
 
@@ -42,45 +48,56 @@ async function fetchResponses() {
             responseList.appendChild(row);
         });
 
-        // ✅ Reapply event listeners for newly created buttons
+        // Attach event listeners to "Mark as Completed" buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
-            button.addEventListener("click", function() {
+            button.addEventListener("click", async function() {
                 const rowNumber = this.getAttribute("data-row");
-                markAsCompleted(rowNumber, this);
+                await markAsCompleted(rowNumber, this);
             });
         });
-
-        console.log("Completed Rows After Refresh:", completedRows); // Debugging log
 
     } catch (error) {
         console.error("Failed to fetch data:", error);
     }
 }
 
-// ✅ Fix: Ensure completed rows are saved correctly in localStorage
-function markAsCompleted(rowNumber, buttonElement) {
-    console.log("Marking row as completed:", rowNumber);
+// ✅ Function to Send "Mark as Completed" Request to Google Sheets
+async function markAsCompleted(rowNumber, buttonElement) {
+    console.log("Marking row as completed in Google Sheets:", rowNumber);
 
     if (!rowNumber) {
         console.error("Error: rowNumber is undefined or null");
         return;
     }
 
-    // ✅ Store completed row in localStorage
-    completedRows.add(rowNumber);
-    localStorage.setItem("completedRows", JSON.stringify([...completedRows])); // Save to localStorage
+    const confirmMark = confirm("Are you sure you want to mark this as completed?");
+    if (!confirmMark) return;
 
-    let row = buttonElement.closest("tr");
-    row.querySelector("td:nth-child(5)").textContent = "Completed"; // Update status column
+    try {
+        const response = await fetch(scriptUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ command: "markComplete", rowNumber: parseInt(rowNumber) })
+        });
 
-    buttonElement.outerHTML = "<span class='completed-text'>✔ Completed</span>"; // Replace button with text
+        const result = await response.json();
+        console.log("Update Response:", result); // Debugging Log
 
-    console.log("Updated Completed Rows:", completedRows); // Debugging log
+        if (result.status === "success") {
+            alert("Response marked as completed!");
+            fetchResponses(); // Refresh list after update
+        } else {
+            alert("Failed to mark response as completed.");
+        }
+    } catch (error) {
+        console.error("Error updating response:", error);
+    }
 }
 
-// ✅ Ensure completed rows persist after a page refresh
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Restoring Completed Rows from Local Storage:", completedRows);
-    fetchResponses();
-});
-setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
+// Load responses when the page loads
+fetchResponses();
+setInterval(fetchResponses, 10000);
+}// Auto-refresh every 10 seconds
