@@ -1,4 +1,4 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbyVtq3czDEeyha71PE0UUxH-ETREFNlQCLFeHItjquwH8dmSAmhTZEknOxUC4K4kFwV/exec"; 
+const scriptUrl = "https://sparkling-bonus-4190.balloongoat181.workers.dev/";
 
 async function fetchResponses() {
     try {
