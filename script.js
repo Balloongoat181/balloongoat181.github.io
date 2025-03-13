@@ -1,4 +1,4 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbxk9NfonyF9Ti5sSCZEtxT-DN1FO9mPB9zpqu9tQRamcB95Mwgv0mCDG2XcRMYCf2a2/exec"; // Replace with your Web App URL
+const scriptUrl = "https://script.google.com/macros/s/AKfycbyVtq3czDEeyha71PE0UUxH-ETREFNlQCLFeHItjquwH8dmSAmhTZEknOxUC4K4kFwV/exec"; 
 
 async function fetchResponses() {
     try {
@@ -48,7 +48,7 @@ async function fetchResponses() {
             responseList.appendChild(row);
         });
 
-        // ✅ Attach event listeners to "Mark as Completed" buttons
+        // Attach event listeners to "Mark as Completed" buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
             button.addEventListener("click", async function() {
                 const rowNumber = this.getAttribute("data-row");
