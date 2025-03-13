@@ -48,7 +48,7 @@ async function fetchResponses() {
             responseList.appendChild(row);
         });
 
-        // Attach event listeners to "Mark as Completed" buttons
+        // ✅ Attach event listeners to "Mark as Completed" buttons
         document.querySelectorAll(".complete-btn").forEach(button => {
             button.addEventListener("click", async function() {
                 const rowNumber = this.getAttribute("data-row");
@@ -97,7 +97,6 @@ async function markAsCompleted(rowNumber, buttonElement) {
     }
 }
 
-// Load responses when the page loads
+// ✅ Load responses when the page loads
 fetchResponses();
 setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
-
