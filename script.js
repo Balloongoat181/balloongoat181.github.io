@@ -100,4 +100,4 @@ async function markAsCompleted(rowNumber, buttonElement) {
 // Load responses when the page loads
 fetchResponses();
 setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
-}
+
