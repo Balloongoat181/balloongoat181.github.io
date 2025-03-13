@@ -1,4 +1,4 @@
-const scriptUrl = "https://script.google.com/macros/s/AKfycbwFcnJz-OCElsGPbWy_75tZIfD8JiNo6ocxt1FswNFNwP7h4c72qn5BRuUTftKnRNM/exec"; // Replace with your Web App URL
+const scriptUrl = "https://script.google.com/macros/s/AKfycbxk9NfonyF9Ti5sSCZEtxT-DN1FO9mPB9zpqu9tQRamcB95Mwgv0mCDG2XcRMYCf2a2/exec"; // Replace with your Web App URL
 
 async function fetchResponses() {
     try {
@@ -27,7 +27,7 @@ async function fetchResponses() {
         }
 
         data.forEach((entry, index) => {
-            let rowNumber = index + 2; // Ensure correct row mapping
+            let rowNumber = entry.rowNumber; // Use correct row number from Google Sheets
 
             let row = document.createElement("tr");
 
@@ -99,5 +99,5 @@ async function markAsCompleted(rowNumber, buttonElement) {
 
 // Load responses when the page loads
 fetchResponses();
-setInterval(fetchResponses, 10000);
-}// Auto-refresh every 10 seconds
+setInterval(fetchResponses, 10000); // Auto-refresh every 10 seconds
+}
